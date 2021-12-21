@@ -1,6 +1,6 @@
 # Route Planning Project
 
-This repo contains the code for the Route Planning project.
+This repo contains the code for the Route Planning project implemented in C++. The project extends the IO2D map display code to use A* to find a path between two points. A* is a informed search algorithm is popular in motion planning applications. 
 
 ![Alt Text](https://media.giphy.com/media/JWofcMgtBVmw6XWuJR/giphy.gif)
 
