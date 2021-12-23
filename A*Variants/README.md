@@ -7,4 +7,4 @@ Path finding for mobile robots is a basic problem which can be solved using a in
 
 The gif below illustrates solution found by AN* variant. The variant finds a sub-optimal path faster than A* (the yellow path) and then iteratively works towards finding the optimal path. The advantage of AN* is that a feasible path can be found quickly and then iteratively with enough time a path which tends to be the optimal path.
 
-![Alt Text](https://media.giphy.com/media/seyAkWbwzZu7DAf7jK/giphy.gif)<img src="https://github.com/nitishsanghi/Motion-Planning/blob/master/A*Variants/ANStarSample.jpg" width="500" height="250">
+![Alt Text](https://media.giphy.com/media/seyAkWbwzZu7DAf7jK/giphy.gif)<img src="https://github.com/nitishsanghi/Motion-Planning/blob/master/A*Variants/ANStarSample.jpg" width="750" height="375">
