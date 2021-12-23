@@ -7,6 +7,7 @@ The gif below illustrates the path found using BiRRT which has been smoothened.
 
 
 The gifs below illustrate the paths found for the end effector using A* which is then used to initialize the path to be iteratively optimized by RRT* planner as illustrated in the next gif.
+
 ![Alt Text](https://media.giphy.com/media/16FVZg4TPePu27YHED/giphy.gif)
 
 The blue path is the end effector path found in task space. Using inverse kinematics, the 7-DOF path for initializing the RRT* planner is found from the initial end effector path. RRT* find the path in red which is smoother than the A* path found initially.
