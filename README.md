@@ -1,2 +1,5 @@
-# ROS
-Projects using open source libraries for robotics like ROS, Gazebo, OpenRave, OMPL, etc
+# Motion-Planning
+Repository contains implementations of various motion planning algorithms. 
+
+## Project list
+* A* implementation in C++ to find path between two points on a 2D map
