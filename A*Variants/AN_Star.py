@@ -154,14 +154,14 @@ def nodecollisioncheck(node):
 			robot.SetActiveDOFValues(node.value)
 			return env.CheckCollision(robot)
 
-def children_8c(node, movements_8c, xytheta_grid): #Find potential children for 4c
+def findchildren(node, movements, xytheta_grid): #Find potential children for 4c
 		#print "finding children"
 		theta_lim = len(xytheta_grid) - 1
 		x_lim = len(xytheta_grid[0]) - 1
 		y_lim = len(xytheta_grid[0][0]) - 1
 		children = []
 		#print node.value
-		for movement in movements_8c:
+		for movement in movements:
 			temp_theta = node.location[0] + movement[0]
 			temp_x = node.location[1] + movement[1]
 			temp_y = node.location[2] + movement[2]
@@ -178,7 +178,7 @@ def children_8c(node, movements_8c, xytheta_grid): #Find potential children for 
 			#print "Valid child found"
 		return children 
 
-def heuristic_euc(node, goalconfig):
+def heuristic(node, goalconfig):
 		dx = (node.value[0] - goalconfig[0])
 		dy = (node.value[1] - goalconfig[1])
 		dtheta = abs(node.value[2] - goalconfig[2])
@@ -189,7 +189,7 @@ def heuristic_euc(node, goalconfig):
 		htheta2 = dtheta*dtheta
 		node.h =  sqrt(hx2 + hy2 + htheta2)
 
-def improvesolution(open_list,G,E):
+def improvesolution(open_list,G,E,movements):
 			size = len(open_list)
 			while size > 0:
 				time_axis.append(-start_time + time.clock())
@@ -209,10 +209,10 @@ def improvesolution(open_list,G,E):
 					G = current.g
 					time_axis.append(-start_time + time.clock())
 					cost_axis.append(G)
-					#print time.clock() - start_time
+					print time.clock() - start_time
 					return G, E
 
-				children = children_8c(current, movements_8c, xytheta_grid)
+				children = findchildren(current, movements, xytheta_grid)
 				for child in children:
 						temp_g = current.g + child.costOfStepEuc(current)
 						if nodecollisioncheck(child):
@@ -220,7 +220,7 @@ def improvesolution(open_list,G,E):
 						if child.g > temp_g and not nodecollisioncheck(child):
 							child.g = temp_g
 							child.parent = current
-							heuristic_euc(child, goalconfig)
+							heuristic(child, goalconfig)
 							child.f()
 							child.e(G)
 							if child.fcost < G and child not in open_list:
@@ -231,21 +231,21 @@ def improvesolution(open_list,G,E):
 				if size == 0:
 					return G, E
  
-def pathfinder_8c_euc(goalconfig, xytheta_grid):
+def pathfinder(goalconfig, xytheta_grid, movements):
 		start_time = time.clock()
 		open_list = set()
 		G = 999
 		E = 999
 
 		start = xytheta_grid[2][0][0] #Start coordinates
-		heuristic_euc(start, goalconfig)
+		heuristic(start, goalconfig)
 		start.g = 0.0
 		start.e(G)
 		current = start
 		open_list.add(current)
 		
 		while open_list:
-			G, E = improvesolution(open_list, G,E)
+			G, E = improvesolution(open_list, G,E, movements)
 			#print G,E
 			time_axis.append(-start_time + time.clock())
 			cost_axis.append(G)
@@ -269,9 +269,8 @@ def pathfinder_8c_euc(goalconfig, xytheta_grid):
 			path.append(current)
 			current = current.parent
 		path.append(current)
-		#print time.clock() - start_time
+		print time.clock() - start_time
 		return paths[-1] 
- 
 
 if __name__ == "__main__":
 
@@ -302,32 +301,25 @@ if __name__ == "__main__":
 
 	### Grid Creation
 	# Start Node
-	x_start_node = -3.4
-	y_start_node = -1.4
-	theta_start_node = -pi
+	x_start_node, y_start_node, theta_start_node = -3.4, -1.4, -pi
 
 	# End Node
-	x_end_node = 3.4
-	y_end_node = 1.4
-	theta_end_node = pi
+	x_end_node, y_end_node, theta_end_node = 3.4, 1.4, pi
 
 	# Step Size
-	step_x = .1
-	step_y = .1
-	step_theta = pi/2
+	step_x, step_y, step_theta = .1, .1, pi/2
 	
 	x_nodes, y_nodes, theta_nodes = xytheta_nodes_coordinates(x_start_node, x_end_node, y_start_node, y_end_node, theta_start_node, theta_end_node) #Finding node coordinates
 	
 	xytheta_grid = creategrid3d(x_nodes, y_nodes, theta_nodes) # Creating grid
 
-	# Movement steps for 4c and 8c
-	movements_4c = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]]
-	movements_8c = []
+	# Movement steps for 8c
+	movements = []
 	for x in [-1,0,1]:
 		for y in [-1,0,1]:
 			for theta in [-1,0,1]:
-				movements_8c.append([theta, x, y])
-	movements_8c.remove([0, 0, 0])
+				movements.append([theta, x, y])
+	movements.remove([0, 0, 0])
 
     #### Implement your algorithm to compute a path for the robot's base starting from the current configuration of the robot and ending at goalconfig. The robot's base DOF have already been set as active. It may be easier to implement this as a function in a separate file and call it here.
 	collision_free_config = set()
@@ -343,7 +335,7 @@ if __name__ == "__main__":
 	theta_nodes_num = len(theta_nodes)
 	paths = []
 
-	path_node = pathfinder_8c_euc(goalconfig,xytheta_grid)
+	path_node = pathfinder(goalconfig,xytheta_grid,movements)
 	time_axis = array(time_axis)
 	cost_axis = array(cost_axis)
 	savetxt("time.csv", time_axis, delimiter=",")
@@ -401,7 +393,7 @@ if __name__ == "__main__":
 	end = time.clock()
 	print "Time: ", end - start
 
-        # Now that you have computed a path, convert it to an openrave trajectory 
+    # Now that you have computed a path, convert it to an openrave trajectory 
 	traj = ConvertPathToTrajectory(robot, path)
 
 	# Execute the trajectory on the robot.
