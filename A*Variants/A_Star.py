@@ -20,7 +20,7 @@ class PlotSpinner(threading.Thread):
         while self.ok:
             #self.handle.SetTransform(matrixFromAxisAngle([0,mod(time.time()-self.starttime,2*pi),0]))
             self.handle.SetShow(True)
-            #time.sleep(0.01) """
+            #time.sleep(0.01)
 
 def waitrobot(robot):
     """busy wait for robot completion"""
